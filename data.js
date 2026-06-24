@@ -16,7 +16,7 @@ const characters = [
     posts: [
       {
         text: "Хайповых вайбов в ваш дом",
-        image: "images/posts/Felix_Post.png",
+        image: "images/posts/Felix_Post.jpg",
         tags: ["Ленивое утро", "Лапки", "Альва"],
         music: {
           title: "Soft Rain",
