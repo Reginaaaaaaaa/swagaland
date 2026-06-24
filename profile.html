@@ -19,7 +19,18 @@
       <section id="profileHeader"></section>
       <hr>
       <h2>Посты</h2>
-      <div id="profilePosts"></div>
+      <button id="showPostForm" class="new-post-button">+ Новый пост</button>
+
+      <form id="postForm" class="post-form hidden">
+        <textarea id="postText" placeholder="Текст поста"></textarea>
+        <input id="postImage" type="text" placeholder="Ссылка на фото или путь images/posts/photo.jpg">
+        <input id="postTags" type="text" placeholder="Теги через запятую: дождь, утро, кот">
+        <input id="postMusicTitle" type="text" placeholder="Название музыки">
+        <input id="postMusicFile" type="text" placeholder="Путь к музыке music/song.mp3">
+        <button type="submit">Опубликовать</button>
+      </form>
+
+<div id="profilePosts"></div>
     </main>
 
   </div>
