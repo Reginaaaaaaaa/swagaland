@@ -120,6 +120,11 @@ function renderProfile() {
     .join("");
 }
 
-renderSuggestions();
-renderFeed();
-renderProfile();
+if (document.getElementById("feed")) {
+    renderSuggestions();
+    renderFeed();
+}
+
+if (document.getElementById("profileHeader")) {
+    renderProfile();
+}
