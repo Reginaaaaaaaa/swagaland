@@ -8,16 +8,16 @@ const characters = [
     birthday: "8 января",
     status: "рэп баттл это моя жизнь",
     about: [
-      "Люблю дождь",
-      "Немного ночная сова",
-      "Meow :3"
+      "Рэпер",
+      "Скейтер",
+      "Можете просить автограф уже сейчас"
     ],
-    friends: ["william", "mortenax", "loren"],
+    friends: ["Brianna", "Nandi", "Freya"],
     posts: [
       {
         text: "Хайповых вайбов в ваш дом",
         image: "images/posts/Felix_Post.jpg",
-        tags: ["Ленивое утро", "Лапки", "Альва"],
+        tags: ["Сваганосцы", "Биф_Машины"],
         music: {
           title: "Soft Rain",
           file: "music/soft-rain.mp3"
@@ -34,10 +34,10 @@ const characters = [
     ]
   },
   {
-    id: "william",
-    name: "Виллиам Николз",
+    id: "Brianna",
+    name: "Бри",
     avatar: "images/avatars/william.jpg",
-    sex: "мужской",
+    sex: "женский",
     position: "Архивариус",
     birthday: "14 марта",
     status: "Иногда молчание говорит громче любых признаний.",
@@ -58,8 +58,8 @@ const characters = [
     ]
   },
   {
-    id: "mortenax",
-    name: "Мортенакс Блэйд",
+    id: "Nandi",
+    name: "Нанди",
     avatar: "images/avatars/mortenax.jpg",
     sex: "мужской",
     position: "Исследователь",
@@ -82,8 +82,8 @@ const characters = [
     ]
   },
   {
-    id: "loren",
-    name: "Лорен Наполи",
+    id: "Freya",
+    name: "Фрейя",
     avatar: "images/avatars/loren.jpg",
     sex: "женский",
     position: "Художница",
