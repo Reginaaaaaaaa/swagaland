@@ -4,7 +4,7 @@ const characters = [
     name: "Феликс Стрейн",
     avatar: "images/avatars/Felix_avatar.png",
     sex: "мужской",
-    position: "верхняя",
+    relationship: "ЫЫЫЫЫЫ",
     birthday: "8 января",
     status: "рэп баттл это моя жизнь",
     about: [
@@ -38,7 +38,7 @@ const characters = [
     name: "Бри",
     avatar: "images/avatars/william.jpg",
     sex: "женский",
-    position: "Архивариус",
+    relationship: "ЫЫЫЫЫЫ",
     birthday: "14 марта",
     status: "Иногда молчание говорит громче любых признаний.",
     about: [
@@ -62,7 +62,7 @@ const characters = [
     name: "Нанди",
     avatar: "images/avatars/mortenax.jpg",
     sex: "мужской",
-    position: "Исследователь",
+    relationship: "ЫЫЫЫЫЫ",
     birthday: "22 октября",
     status: "Некоторые двери лучше не открывать. Поэтому я их и открываю.",
     about: [
@@ -86,7 +86,7 @@ const characters = [
     name: "Фрейя",
     avatar: "images/avatars/loren.jpg",
     sex: "женский",
-    position: "Художница",
+    relationship: "ЫЫЫЫЫЫ",
     birthday: "3 июня",
     status: "Рисую то, что не умеет молчать.",
     about: [
