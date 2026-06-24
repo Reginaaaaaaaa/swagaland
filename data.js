@@ -36,22 +36,20 @@ const characters = [
   {
     id: "Brianna",
     name: "Бри",
-    avatar: "images/avatars/william.jpg",
+    avatar: "images/avatars/Bri_avatar.png",
     sex: "женский",
     relationship: "ЫЫЫЫЫЫ",
-    birthday: "14 марта",
-    status: "Иногда молчание говорит громче любых признаний.",
+    birthday: "хз",
+    status: "---",
     about: [
-      "Люблю старые книги",
-      "Пью чай слишком драматично",
-      "Не доверяю солнечным дням"
+      "----"
     ],
-    friends: ["elen", "mortenax"],
+    friends: ["Felix", "Nandi", "Freya"],
     posts: [
       {
-        text: "Нашел старую запись. Не уверен, что хотел ее найти.",
+        text: "----",
         image: "images/posts/william-post-1.jpg",
-        tags: ["Архив", "Тайны"],
+        tags: ["---"],
         music: null,
         date: "28.05.2026"
       }
