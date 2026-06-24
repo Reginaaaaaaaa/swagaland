@@ -22,8 +22,14 @@ const characters = [
           title: "Soft Rain",
           file: "music/soft-rain.mp3"
         },
-        date: "29.05.2026"
-      },
+        date: "29.05.2026",
+        comments: [
+          {
+            author: "Nandi",
+            text: "Вечной сваги тебе, бро!"
+          }
+        ]
+    },
       {
         text: "Сегодня идеальный день, чтобы спрятаться под пледом и делать вид, что мир не загрузился.",
         image: "",
