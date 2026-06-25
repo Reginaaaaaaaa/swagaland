@@ -174,29 +174,33 @@ function renderProfile() {
   }
 
   profileSidebar.innerHTML = `
+  <div class="profile-card">
     <img class="big-avatar" src="${character.avatar}" alt="${character.name}">
-    
-    <div class="box">
-      <h2>Обо мне</h2>
-      ${character.about.map(item => `<p>${item}</p>`).join("")}
-    </div>
+    <h2>${character.name}</h2>
+    <p class="online-status">● Сейчас онлайн</p>
+  </div>
 
-    <div class="box">
-      <h2>Друзья</h2>
-      <div class="friends">
-        ${character.friends.map(friendId => {
-          const friend = getCharacter(friendId);
-          if (!friend) return "";
-          return `
-            <a href="profile.html?id=${friend.id}">
-              <img src="${friend.avatar}" alt="${friend.name}">
-              <span>${friend.name}</span>
-            </a>
-          `;
-        }).join("")}
-      </div>
+  <div class="box">
+    <h2>О себе</h2>
+    ${character.about.map(item => `<p>• ${item}</p>`).join("")}
+  </div>
+
+  <div class="box">
+    <h2>Друзья (${character.friends.length})</h2>
+    <div class="friends">
+      ${character.friends.map(friendId => {
+        const friend = getCharacter(friendId);
+        if (!friend) return "";
+        return `
+          <a href="profile.html?id=${friend.id}">
+            <img src="${friend.avatar}" alt="${friend.name}">
+            <span>${friend.name}</span>
+          </a>
+        `;
+      }).join("")}
     </div>
-  `;
+  </div>
+`;
 
   profileHeader.innerHTML = `
     <h1>${character.name}</h1>
