@@ -16,7 +16,7 @@ const characters = [
     
     gallery: [
       "images/gallery/Felix_Post2",
-      "images/gallery/Felix_avatar.png",
+      "images/gallery/Felix_Post.jpg",
       "images/gallery/elen_3.jpg",
       "images/gallery/elen_4.jpg",
       "images/gallery/elen_5.jpg",
