@@ -202,9 +202,9 @@ function renderProfile() {
     <h1>${character.name}</h1>
 
     <div class="info">
-      <span><b>SEX</b> ${character.sex}</span>
-      <span><b>RELATIONSHIP</b> ${character.relationship || "Не указано"}</span>
-      <span><b>BIRTHDATE</b> ${character.birthday}</span>
+      <span><b>Пол</b> ${character.sex}</span>
+      <span><b>Статус отношений</b> ${character.relationship || "Не указано"}</span>
+      <span><b>Город</b> ${character.birthday}</span>
     </div>
 
     <p class="status">${character.status}</p>
