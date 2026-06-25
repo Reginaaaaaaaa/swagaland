@@ -479,3 +479,29 @@ hr {
 .hidden {
   display: none !important;
 }
+
+.mini-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.mini-stats div {
+  background: #f4f7fb;
+  border: 1px solid #c9d8ec;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.mini-stats b {
+  display: block;
+  color: #234f86;
+  font-size: 18px;
+}
+
+.mini-stats span {
+  display: block;
+  color: #6b7f99;
+  font-size: 11px;
+  margin-top: 2px;
+}
