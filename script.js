@@ -85,10 +85,7 @@ function renderFeed() {
   const allPosts = [];
 
   characters.forEach(character => {
-  const savedPosts = JSON.parse(localStorage.getItem(`posts_${character.id}`)) || [];
-  const allCharacterPosts = [...savedPosts, ...character.posts];
-
-  allCharacterPosts.forEach(post => {
+  character.posts.forEach(post => {
     allPosts.push({
       post,
       author: character
@@ -154,12 +151,9 @@ function renderProfile() {
     <p class="status">${character.status}</p>
   `;
 
-  const savedPosts = JSON.parse(localStorage.getItem(`posts_${character.id}`)) || [];
-  const allProfilePosts = [...savedPosts, ...character.posts];
-
-  profilePosts.innerHTML = allProfilePosts
-    .map(post => createPost(post, character))
-    .join("");
+  profilePosts.innerHTML = character.posts
+  .map(post => createPost(post, character))
+  .join("");
 
   setupPostForm(character);
 }
@@ -172,52 +166,4 @@ if (document.getElementById("feed")) {
 if (document.getElementById("profileHeader")) {
     renderProfile();
   
-function setupPostForm(character) {
-  const button = document.getElementById("showPostForm");
-  const form = document.getElementById("postForm");
-
-  if (!button || !form) return;
-
-  button.onclick = () => {
-    form.classList.toggle("hidden");
-  };
-
-  form.onsubmit = (event) => {
-    event.preventDefault();
-
-    const text = document.getElementById("postText").value.trim();
-    const image = document.getElementById("postImage").value.trim();
-    const tagsValue = document.getElementById("postTags").value.trim();
-    const musicTitle = document.getElementById("postMusicTitle").value.trim();
-    const musicFile = document.getElementById("postMusicFile").value.trim();
-
-    if (!text) {
-      alert("Напиши текст поста");
-      return;
-    }
-
-    const newPost = {
-      text: text,
-      image: image,
-      tags: tagsValue ? tagsValue.split(",").map(tag => tag.trim()) : [],
-      music: musicTitle && musicFile ? {
-        title: musicTitle,
-        file: musicFile
-      } : null,
-      date: new Date().toLocaleDateString("ru-RU"),
-      comments: []
-    };
-
-    const key = `posts_${character.id}`;
-    const savedPosts = JSON.parse(localStorage.getItem(key)) || [];
-
-    savedPosts.unshift(newPost);
-    localStorage.setItem(key, JSON.stringify(savedPosts));
-
-    form.reset();
-    form.classList.add("hidden");
-
-    renderProfile();
-  };
-}
 }
