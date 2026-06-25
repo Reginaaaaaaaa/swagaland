@@ -2,6 +2,21 @@ function getCharacter(id) {
   return characters.find(character => character.id === id);
 }
 
+function getPostById(characterId, postId) {
+  const character = getCharacter(characterId);
+
+  if (!character) return null;
+
+  const post = character.posts.find(post => post.id === postId);
+
+  if (!post) return null;
+
+  return {
+    post,
+    author: character
+  };
+}
+
 function createPost(post, author) {
   return `
     <article class="post">
@@ -66,6 +81,35 @@ function createPost(post, author) {
   `;
 }
 
+function createRepost(repost, repostAuthor) {
+  const original = getPostById(repost.fromCharacter, repost.postId);
+
+  if (!original) {
+    return `
+      <article class="post repost">
+        <p>Репост не найден.</p>
+      </article>
+    `;
+  }
+
+  return `
+    <article class="post repost">
+      <div class="repost-label">
+        <b>${repostAuthor.name}</b> сделал(а) репост записи 
+        <a href="profile.html?id=${original.author.id}">${original.author.name}</a>
+      </div>
+
+      ${repost.comment ? `<p class="repost-comment">${repost.comment}</p>` : ""}
+
+      <div class="repost-original">
+        ${createPost(original.post, original.author)}
+      </div>
+
+      <div class="date">${repost.date}</div>
+    </article>
+  `;
+}
+
 function renderSuggestions() {
   const block = document.getElementById("suggestions");
   if (!block) return;
@@ -87,15 +131,30 @@ function renderFeed() {
   characters.forEach(character => {
   character.posts.forEach(post => {
     allPosts.push({
+      type: "post",
       post,
+      author: character
+    });
+  });
+
+  (character.reposts || []).forEach(repost => {
+    allPosts.push({
+      type: "repost",
+      repost,
       author: character
     });
   });
 });
 
-  feed.innerHTML = allPosts
-    .map(item => createPost(item.post, item.author))
-    .join("");
+ feed.innerHTML = allPosts
+  .map(item => {
+    if (item.type === "post") {
+      return createPost(item.post, item.author);
+    }
+
+    return createRepost(item.repost, item.author);
+  })
+  .join("");
 }
 
 function renderProfile() {
@@ -151,8 +210,27 @@ function renderProfile() {
     <p class="status">${character.status}</p>
   `;
 
-  profilePosts.innerHTML = character.posts
-  .map(post => createPost(post, character))
+  const profileItems = [
+  ...character.posts.map(post => ({
+    type: "post",
+    date: post.date,
+    content: post
+  })),
+  ...(character.reposts || []).map(repost => ({
+    type: "repost",
+    date: repost.date,
+    content: repost
+  }))
+];
+
+profilePosts.innerHTML = profileItems
+  .map(item => {
+    if (item.type === "post") {
+      return createPost(item.content, character);
+    }
+
+    return createRepost(item.content, character);
+  })
   .join("");
 
   setupPostForm(character);
