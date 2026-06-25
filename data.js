@@ -15,6 +15,13 @@ const characters = [
     friends: ["Brianna", "Nandi", "Freya"],
     posts: [
       {
+        text: "Да, наша компания друзей пусть и небольшая, зато мы все с серьезными отклонениями!",
+        image: "images/posts/Felix_Post2.png",
+        tags: ["Дружба", "ПомойкаГэнг"],
+        music: null,
+        date: "24.06.2026"
+      },
+      {
         text: "Хайповых вайбов в ваш дом",
         image: "images/posts/Felix_Post.jpg",
         tags: ["Сваганосцы", "Биф_Машины"],
@@ -30,13 +37,6 @@ const characters = [
           }
         ]
     },
-      {
-        text: "Сегодня идеальный день, чтобы спрятаться под пледом и делать вид, что мир не загрузился.",
-        image: "",
-        tags: ["Дождь", "Настроение"],
-        music: null,
-        date: "30.05.2026"
-      }
     ]
   },
   {
