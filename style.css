@@ -475,3 +475,7 @@ hr {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.hidden {
+  display: none !important;
+}
