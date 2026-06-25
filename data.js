@@ -15,6 +15,7 @@ const characters = [
     friends: ["Brianna", "Nandi", "Freya"],
     posts: [
       {
+        id: "Felix_Post2",
         text: "Да, наша компания друзей пусть и небольшая, зато мы все с серьезными отклонениями!",
         image: "images/posts/Felix_Post2.png",
         tags: ["Дружба", "ПомойкаГэнг"],
@@ -51,14 +52,17 @@ const characters = [
       "----"
     ],
     friends: ["Felix", "Nandi", "Freya"],
+
+     reposts: [
+    {
+      fromCharacter: "Felix",
+      postId: "Felix_Post2",
+      comment: null,
+      date: "24.06.2026"
+    }
+  ],
+    
     posts: [
-      {
-        text: "----",
-        image: "images/posts/william-post-1.jpg",
-        tags: ["---"],
-        music: null,
-        date: "28.05.2026"
-      }
     ]
   },
   {
