@@ -313,3 +313,31 @@ hr {
 .comment-body p {
   margin: 4px 0 0;
 }
+
+.repost {
+  background: #f9fbff;
+}
+
+.repost-label {
+  background: #e5eefb;
+  border: 1px solid #c9d8ec;
+  padding: 8px;
+  margin-bottom: 10px;
+  color: #234f86;
+}
+
+.repost-comment {
+  background: #fffbe8;
+  border-left: 3px solid #d8c36a;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.repost-original {
+  border-left: 3px solid #9fb6d4;
+  padding-left: 10px;
+}
+
+.repost-original .post {
+  margin-bottom: 0;
+}
