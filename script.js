@@ -181,6 +181,32 @@ function renderProfile() {
   </div>
 
   <div class="box">
+  <h2>Статистика</h2>
+
+  <div class="mini-stats">
+    <div>
+      <b>${character.posts.length}</b>
+      <span>Записей</span>
+    </div>
+
+    <div>
+      <b>${(character.gallery || []).length}</b>
+      <span>Фото</span>
+    </div>
+
+    <div>
+      <b>${character.friends.length}</b>
+      <span>Друзей</span>
+    </div>
+
+    <div>
+      <b>${character.posts.reduce((sum, post) => sum + ((post.comments || []).length), 0)}</b>
+      <span>Комментариев</span>
+    </div>
+  </div>
+</div>
+
+  <div class="box">
     <h2>О себе</h2>
     ${character.about.map(item => `<p>• ${item}</p>`).join("")}
   </div>
