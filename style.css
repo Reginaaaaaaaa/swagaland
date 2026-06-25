@@ -103,21 +103,40 @@ hr {
   margin: 6px 0;
 }
 
-.info {
-  background: #f4f7fb;
-  border: 1px solid #c9d8ec;
-  padding: 10px;
-  margin-bottom: 12px;
+.profile-info {
+    margin: 20px 0;
+    border: 1px solid #c9d8ec;
+    background: #f9fbff;
 }
 
-.info span {
-  display: block;
-  margin-bottom: 6px;
+.profile-info h3 {
+    margin: 0;
+    padding: 10px 14px;
+    background: #e7eef8;
+    border-bottom: 1px solid #c9d8ec;
+    color: #234f86;
+    font-size: 16px;
 }
 
-.info b {
-  color: #234f86;
-  margin-right: 6px;
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e3eaf5;
+}
+
+.info-table tr:last-child td {
+    border-bottom: none;
+}
+
+.info-table td:first-child {
+    width: 170px;
+    font-weight: bold;
+    color: #5c6f88;
+    background: #f4f7fb;
 }
 
 .status {
