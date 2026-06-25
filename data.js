@@ -5,7 +5,7 @@ const characters = [
     avatar: "images/avatars/Felix_avatar.png",
     sex: "мужской",
     relationship: "ЫЫЫЫЫЫ",
-    birthday: "8 января",
+    city: "Не указано",
     status: "рэп баттл это моя жизнь",
     about: [
       "Рэпер",
@@ -46,7 +46,7 @@ const characters = [
     avatar: "images/avatars/Bri_avatar.png",
     sex: "женский",
     relationship: "ЫЫЫЫЫЫ",
-    birthday: "хз",
+    city: "Не указано",
     status: "---",
     about: [
       "----"
@@ -71,7 +71,7 @@ const characters = [
     avatar: "images/avatars/Nandi_avatar.png",
     sex: "мужской",
     relationship: "ЫЫЫЫЫЫ",
-    birthday: "---",
+    city: "Не указано",
     status: "----",
     about: [
       "----",
@@ -103,7 +103,7 @@ const characters = [
     avatar: "images/avatars/loren.jpg",
     sex: "женский",
     relationship: "ЫЫЫЫЫЫ",
-    birthday: "3 июня",
+    city: "Не указано",
     status: "Рисую то, что не умеет молчать.",
     about: [
       "Краски повсюду",
