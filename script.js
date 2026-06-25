@@ -206,6 +206,19 @@ function renderProfile() {
   </div>
 </div>
 
+<div class="box">
+  <h2>Плейлист</h2>
+
+  <div class="playlist">
+    ${(character.playlist || []).map(track => `
+      <div class="track">
+        <div class="track-title">♪ ${track.artist} — ${track.title}</div>
+        ${track.file ? `<audio controls src="${track.file}"></audio>` : ""}
+      </div>
+    `).join("")}
+  </div>
+</div>
+
   <div class="box">
     <h2>О себе</h2>
     ${character.about.map(item => `<p>• ${item}</p>`).join("")}
