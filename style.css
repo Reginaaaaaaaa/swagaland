@@ -360,3 +360,33 @@ hr {
 .repost-original .post {
   margin-bottom: 0;
 }
+
+.profile-card {
+  text-align: center;
+  border-bottom: 1px solid #c9d8ec;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+}
+
+.profile-card h2 {
+  margin: 8px 0 4px;
+  color: #234f86;
+}
+
+.online-status {
+  font-size: 12px;
+  color: #2f8f46;
+  margin: 0;
+}
+
+.box h2 {
+  font-size: 15px;
+  background: #e7eef8;
+  border: 1px solid #c9d8ec;
+  padding: 7px 9px;
+  margin-bottom: 10px;
+}
+
+.box p {
+  line-height: 1.5;
+}
