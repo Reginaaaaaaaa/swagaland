@@ -334,8 +334,6 @@ profilePosts.innerHTML = profileItems
     return createRepost(item.content, character);
   })
   .join("");
-
-  setupPostForm(character);
 }
 
 if (document.getElementById("feed")) {
@@ -346,8 +344,6 @@ if (document.getElementById("feed")) {
 if (document.getElementById("profileHeader")) {
   renderProfile();
   setupCustomPlayers();
-}
-  
 }
 
 function renderGalleryPage() {
