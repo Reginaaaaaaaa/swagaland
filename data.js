@@ -114,22 +114,20 @@ const characters = [
   {
     id: "Freya",
     name: "Фрейя Хальгрен",
-    avatar: "images/avatars/loren.jpg",
+    avatar: "images/avatars/Freya_avatar.png",
     sex: "женский",
     relationship: "ЫЫЫЫЫЫ",
     city: "Не указано",
-    status: "Рисую то, что не умеет молчать.",
+    status: "---",
     about: [
-      "Краски повсюду",
-      "Люблю утро только на картинах",
-      "Мечтаю о большой мастерской"
+      "---"
     ],
-    friends: ["elen"],
+    friends: ["Felix", "Brianna", "Nandi"],
     posts: [
       {
-        text: "Новый скетч. Кажется, он смотрит на меня первым.",
+        text: "-",
         image: "images/posts/loren-post-1.jpg",
-        tags: ["Арт", "Скетч"],
+        tags: [--"],
         music: null,
         date: "26.05.2026"
       }
