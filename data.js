@@ -13,6 +13,24 @@ const characters = [
       "Можете просить автограф уже сейчас"
     ],
     friends: ["Brianna", "Nandi", "Freya"],
+
+    relations: [
+  {
+    character: "Brianna",
+    type: "Дружба",
+    note: "лучшие друзья и соучастники хаоса"
+  },
+  {
+    character: "Nandi",
+    type: "Дружба",
+    note: "рэп-братство"
+  },
+  {
+    character: "Freya",
+    type: "Знакомые",
+    note: "общаются через общий круг"
+  }
+],
     
     gallery: [
       "images/gallery/Felix_Post2.png",
