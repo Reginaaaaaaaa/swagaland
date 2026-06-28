@@ -525,14 +525,6 @@ function renderMiniCalendar(character) {
   };
 }
 
-  const showAllButton = document.getElementById("showAllPosts");
-
-  if (showAllButton) {
-    showAllButton.addEventListener("click", () => {
-      renderProfilePosts(character);
-    });
-  }
-}
 function renderGalleryPage() {
   const galleryHeader = document.getElementById("galleryHeader");
   const galleryGrid = document.getElementById("galleryGrid");
