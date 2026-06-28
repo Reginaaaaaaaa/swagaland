@@ -132,5 +132,27 @@ const characters = [
         date: "26.05.2026"
       }
     ]
+  },
+  {
+    id: "Jane",
+    name: "Джейн Роуз",
+    avatar: "images/avatars/Freya_avatar.png",
+    sex: "женский",
+    relationship: "ЫЫЫЫЫЫ",
+    city: "Не указано",
+    status: "---",
+    about: [
+      "---"
+    ],
+    friends: ["Felix", "Brianna", "Nandi", "Freya"],
+    posts: [
+      {
+        text: "-",
+        image: "images/posts/loren-post-1.jpg",
+        tags: ["--"],
+        music: null,
+        date: "26.05.2026"
+      }
+    ]
   }
 ];
