@@ -683,3 +683,24 @@ hr {
 .show-all-posts:hover {
   background: #e7eef8;
 }
+
+.calendar-nav {
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.calendar-nav button {
+  border: 1px solid #c9d8ec;
+  background: #f4f7fb;
+  color: #234f86;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 3px 0;
+}
+
+.calendar-nav button:hover {
+  background: #e7eef8;
+}
