@@ -419,26 +419,21 @@ function renderProfilePosts(character, filterDate = null) {
   }).join("");
 }
 
+let calendarOffset = 0;
+
 function renderMiniCalendar(character) {
   const container = document.getElementById("miniCalendar");
   if (!container) return;
 
-  const items = getProfileItems(character).filter(item => item.date);
+  const baseDate = new Date();
+  const calendarDate = new Date(
+    baseDate.getFullYear(),
+    baseDate.getMonth() + calendarOffset,
+    1
+  );
 
-  if (items.length === 0) {
-    container.innerHTML = "<p>Записей пока нет.</p>";
-    return;
-  }
-
-  const latestDate = items
-    .map(item => {
-      const [day, month, year] = item.date.split(".").map(Number);
-      return new Date(year, month - 1, day);
-    })
-    .sort((a, b) => b - a)[0];
-
-  const year = latestDate.getFullYear();
-  const month = latestDate.getMonth();
+  const year = calendarDate.getFullYear();
+  const month = calendarDate.getMonth();
 
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -450,15 +445,24 @@ function renderMiniCalendar(character) {
   ];
 
   const week = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+  const items = getProfileItems(character);
 
   const activeDays = items
+    .filter(item => item.date)
     .map(item => item.date.split(".").map(Number))
     .filter(([day, itemMonth, itemYear]) => {
       return itemMonth === month + 1 && itemYear === year;
     })
     .map(([day]) => day);
 
-  let html = `<div class="calendar-title">${monthNames[month]}</div>`;
+  let html = `
+    <div class="calendar-nav">
+      <button id="prevMonth" type="button">‹</button>
+      <div class="calendar-title">${monthNames[month]} ${year}</div>
+      <button id="nextMonth" type="button">›</button>
+    </div>
+  `;
+
   html += `<div class="calendar-grid">`;
 
   week.forEach(day => {
@@ -496,19 +500,30 @@ function renderMiniCalendar(character) {
 
   container.innerHTML = html;
 
+  document.getElementById("prevMonth").onclick = () => {
+    calendarOffset--;
+    renderMiniCalendar(character);
+  };
+
+  document.getElementById("nextMonth").onclick = () => {
+    calendarOffset++;
+    renderMiniCalendar(character);
+  };
+
   document.querySelectorAll(".calendar-day.has-post").forEach(button => {
     button.addEventListener("click", () => {
-      const day = Number(button.dataset.day);
-      const selectedMonth = Number(button.dataset.month);
-      const selectedYear = Number(button.dataset.year);
-
       renderProfilePosts(character, {
-        day,
-        month: selectedMonth,
-        year: selectedYear
+        day: Number(button.dataset.day),
+        month: Number(button.dataset.month),
+        year: Number(button.dataset.year)
       });
     });
   });
+
+  document.getElementById("showAllPosts").onclick = () => {
+    renderProfilePosts(character);
+  };
+}
 
   const showAllButton = document.getElementById("showAllPosts");
 
