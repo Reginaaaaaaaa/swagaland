@@ -142,7 +142,8 @@ const characters = [
     city: "Не указано",
     status: "---",
     about: [
-      "---"
+      "23 года",
+      "тату-мастер"
     ],
     friends: ["Felix", "Brianna", "Nandi", "Freya"],
     posts: [
