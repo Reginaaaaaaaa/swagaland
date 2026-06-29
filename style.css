@@ -859,13 +859,24 @@ body {
 }
 
 .site-player {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #e7eef8;
-  border-top: 1px solid #9fb6d4;
-  z-index: 1000;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: -90px;
+
+    opacity: 0;
+
+    transition: all .25s ease;
+
+    background: #e7eef8;
+    border-top: 1px solid #9fb6d4;
+
+    z-index: 1000;
+}
+
+.site-player.visible{
+    bottom:0;
+    opacity:1;
 }
 
 .site-player-inner {
