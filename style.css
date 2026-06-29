@@ -788,3 +788,47 @@ hr {
     grid-template-columns: 1fr;
   }
 }
+
+.profile-three-columns {
+  grid-template-columns: 240px 1fr 260px;
+}
+
+.relation-mini-card {
+  border: 1px solid #c9d8ec;
+  background: #f9fbff;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.relation-mini-card a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  color: #234f86;
+}
+
+.relation-mini-card img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border: 1px solid #b8c9df;
+  background: white;
+  padding: 2px;
+}
+
+.relation-mini-type {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #6b7f99;
+  background: #e7eef8;
+  border: 1px solid #c9d8ec;
+  display: inline-block;
+  padding: 2px 6px;
+}
+
+.relation-mini-card p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
