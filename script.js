@@ -228,11 +228,12 @@ function renderProfile() {
     return;
   }
 
-  renderProfileSidebar(character);
-  renderProfileHeader(character);
-  renderProfilePosts(character);
-  renderMiniCalendar(character);
-  setupCustomPlayers();
+ renderProfileSidebar(character);
+renderProfileHeader(character);
+renderProfilePosts(character);
+renderProfileRightbar(character);
+renderMiniCalendar(character);
+setupCustomPlayers();
 }
 
 function renderProfileSidebar(character) {
@@ -311,11 +312,6 @@ function renderProfileSidebar(character) {
         }).join("")}
       </div>
     </div>
-
-  <div class="box">
-  <h2>Связи</h2>
-  <p><a href="relations.html?id=${character.id}">Открыть карту связей →</a></p>
-</div>
 
     <div class="box">
       <h2>Фотоальбом</h2>
@@ -757,6 +753,47 @@ function renderRelationsPage() {
           `;
         }).join("")}
       </div>
+    </div>
+  `;
+}
+
+function renderProfileRightbar(character) {
+  const profileRightbar = document.getElementById("profileRightbar");
+
+  if (!profileRightbar) return;
+
+  const relations = character.relations || [];
+
+  profileRightbar.innerHTML = `
+    <div class="box">
+      <h2>Карта связей</h2>
+
+      ${
+        relations.length > 0
+          ? relations.map(relation => {
+              const relatedCharacter = getCharacter(relation.character);
+
+              if (!relatedCharacter) return "";
+
+              return `
+                <div class="relation-mini-card">
+                  <a href="profile.html?id=${relatedCharacter.id}">
+                    <img src="${relatedCharacter.avatar}" alt="${relatedCharacter.name}">
+                    <span>${relatedCharacter.name}</span>
+                  </a>
+
+                  <div class="relation-mini-type">${relation.type}</div>
+
+                  ${relation.note ? `<p>${relation.note}</p>` : ""}
+                </div>
+              `;
+            }).join("")
+          : "<p>Связи пока не указаны.</p>"
+      }
+
+      <a class="gallery-link" href="relations.html?id=${character.id}">
+        Открыть карту полностью →
+      </a>
     </div>
   `;
 }
