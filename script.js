@@ -798,9 +798,42 @@ function renderProfileRightbar(character) {
   `;
 }
 
+function createNewsPost(item) {
+  return `
+    <article class="post news-post">
+      <div class="news-label">важное объявление</div>
+
+      <h2>${item.title}</h2>
+
+      <p class="post-text">${item.text}</p>
+
+      ${item.image ? `<img class="post-image" src="${item.image}" alt="${item.title}">` : ""}
+
+      <div class="tags">
+        ${(item.tags || []).map(tag => `<span># ${tag}</span>`).join("")}
+      </div>
+
+      <div class="date">${formatPostDate(item.date)}</div>
+    </article>
+  `;
+}
+
+function renderNewsFeed() {
+  const newsFeed = document.getElementById("newsFeed");
+  if (!newsFeed) return;
+
+  newsFeed.innerHTML = (news || [])
+    .map(item => createNewsPost(item))
+    .join("");
+}
+
 if (document.getElementById("feed")) {
   renderSuggestions();
   renderFeed();
+}
+
+if (document.getElementById("newsFeed")) {
+  renderNewsFeed();
 }
 
 if (document.getElementById("profileHeader")) {
