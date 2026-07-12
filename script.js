@@ -646,6 +646,7 @@ function setupCustomPlayers() {
     const volumeBar = track.querySelector(".volume-bar");
     const currentTimeText = track.querySelector(".current-time");
     const durationText = track.querySelector(".duration");
+    const trackTitle = track.querySelector(".track-title");
 
     if (!audio || !playButton || !seekBar || !volumeBar) return;
 
@@ -670,6 +671,8 @@ function setupCustomPlayers() {
       if (audio.paused) {
         audio.play();
         playButton.textContent = "Ⅱ";
+
+        openSitePlayerFromTrack(audio.src, trackTitle ? trackTitle.textContent : "Трек");
       } else {
         audio.pause();
         playButton.textContent = "▶";
@@ -971,6 +974,22 @@ function pauseTrack(){
     }
 
 });
+}
+
+function openSitePlayerFromTrack(src, titleText) {
+  const player = document.getElementById("sitePlayer");
+
+  if (!player) return;
+
+  player.classList.add("visible");
+  document.body.classList.add("player-open");
+
+  player.innerHTML = `
+    <div class="site-player-inner">
+      <div class="site-track-title">${titleText}</div>
+      <audio controls autoplay src="${src}"></audio>
+    </div>
+  `;
 }
 
 if (document.getElementById("feed")) {
