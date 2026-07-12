@@ -1,3 +1,45 @@
+async function loadCharactersFromSupabase() {
+  if (typeof supabaseClient === "undefined") {
+    console.warn("Supabase не подключён. Используются данные из data.js.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("characters")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Ошибка загрузки персонажей из Supabase:", error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    console.warn("Таблица characters пуста. Используются данные из data.js.");
+    return;
+  }
+
+  characters = data.map(databaseCharacter => {
+    const localCharacter = characters.find(
+      character => character.id === databaseCharacter.id
+    );
+
+    return {
+      ...localCharacter,
+      ...databaseCharacter,
+
+      about: databaseCharacter.about || [],
+      friends: databaseCharacter.friends || [],
+      gallery: databaseCharacter.gallery || [],
+      playlist: databaseCharacter.playlist || [],
+      relations: databaseCharacter.relations || [],
+
+      posts: localCharacter?.posts || [],
+      reposts: localCharacter?.reposts || []
+    };
+  });
+}
+
 function getCharacter(id) {
   return characters.find(character => character.id === id);
 }
@@ -992,29 +1034,37 @@ function openSitePlayerFromTrack(src, titleText) {
   `;
 }
 
-if (document.getElementById("feed")) {
-  renderSuggestions();
-  renderFeed();
+async function initializeSite() {
+  await loadCharactersFromSupabase();
+
+  if (document.getElementById("feed")) {
+    renderSuggestions();
+    renderFeed();
+  }
+
+  if (document.getElementById("profileHeader")) {
+    renderProfile();
+  }
+
+  if (document.getElementById("galleryHeader")) {
+    renderGalleryPage();
+  }
+
+  if (document.getElementById("playlistHeader")) {
+    renderPlaylistPage();
+  }
+
+  if (document.getElementById("relationsHeader")) {
+    renderRelationsPage();
+  }
+
+  if (document.getElementById("newsFeed")) {
+    renderNewsFeed();
+  }
+
+  if (document.getElementById("sitePlayer")) {
+    renderSitePlayer();
+  }
 }
 
-if (document.getElementById("newsFeed")) {
-  renderNewsFeed();
-}
-
-if (document.getElementById("profileHeader")) {
-  renderProfile();
-}
-
-if (document.getElementById("galleryHeader")) {
-  renderGalleryPage();
-}
-
-if (document.getElementById("playlistHeader")) {
-  renderPlaylistPage();
-}
-
-if (document.getElementById("relationsHeader")) {
-  renderRelationsPage();
-}
-
-renderSitePlayer();
+initializeSite();
