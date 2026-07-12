@@ -1,4 +1,4 @@
-const characters = [
+let characters = [
   {
     id: "Felix",
     name: "Феликс Стрейн",
