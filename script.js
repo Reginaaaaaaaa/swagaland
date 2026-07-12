@@ -1,43 +1,154 @@
-async function loadCharactersFromSupabase() {
+function formatDatabaseDate(date) {
+  if (!date) return "";
+
+  const parts = date.split("-");
+
+  if (parts.length !== 3) return date;
+
+  const [year, month, day] = parts;
+
+  return `${day}.${month}.${year}`;
+}
+
+async function loadDataFromSupabase() {
   if (typeof supabaseClient === "undefined") {
-    console.warn("Supabase не подключён. Используются данные из data.js.");
+    console.warn(
+      "Supabase не подключён. Используются резервные данные из data.js."
+    );
     return;
   }
 
-  const { data, error } = await supabaseClient
-    .from("characters")
-    .select("*")
-    .order("created_at", { ascending: true });
+  const localCharacters = [...characters];
 
-  if (error) {
-    console.error("Ошибка загрузки персонажей из Supabase:", error);
-    return;
+  const [
+    charactersResponse,
+    postsResponse,
+    newsResponse
+  ] = await Promise.all([
+    supabaseClient
+      .from("characters")
+      .select("*")
+      .order("created_at", { ascending: true }),
+
+    supabaseClient
+      .from("posts")
+      .select("*")
+      .order("published_at", { ascending: false })
+      .order("created_at", { ascending: false }),
+
+    supabaseClient
+      .from("news")
+      .select("*")
+      .order("published_at", { ascending: false })
+      .order("created_at", { ascending: false })
+  ]);
+
+  /*
+   * Персонажи
+   */
+
+  if (charactersResponse.error) {
+    console.error(
+      "Ошибка загрузки персонажей:",
+      charactersResponse.error
+    );
+  } else if (
+    charactersResponse.data &&
+    charactersResponse.data.length > 0
+  ) {
+    characters = charactersResponse.data.map(databaseCharacter => {
+      const localCharacter = localCharacters.find(
+        character => character.id === databaseCharacter.id
+      );
+
+      return {
+        ...localCharacter,
+        ...databaseCharacter,
+
+        about: databaseCharacter.about || [],
+        friends: databaseCharacter.friends || [],
+        gallery: databaseCharacter.gallery || [],
+        playlist: databaseCharacter.playlist || [],
+        relations: databaseCharacter.relations || [],
+
+        /*
+         * Временно сохраняем локальные репосты.
+         */
+        reposts: localCharacter?.reposts || [],
+
+        /*
+         * Посты добавим ниже из таблицы posts.
+         */
+        posts: []
+      };
+    });
   }
 
-  if (!data || data.length === 0) {
-    console.warn("Таблица characters пуста. Используются данные из data.js.");
-    return;
-  }
+  /*
+   * Посты
+   */
 
-  characters = data.map(databaseCharacter => {
-    const localCharacter = characters.find(
-      character => character.id === databaseCharacter.id
+  if (postsResponse.error) {
+    console.error(
+      "Ошибка загрузки постов:",
+      postsResponse.error
     );
 
-    return {
-      ...localCharacter,
-      ...databaseCharacter,
+    /*
+     * Если Supabase не ответил, возвращаем локальные посты.
+     */
+    characters = characters.map(character => {
+      const localCharacter = localCharacters.find(
+        local => local.id === character.id
+      );
 
-      about: databaseCharacter.about || [],
-      friends: databaseCharacter.friends || [],
-      gallery: databaseCharacter.gallery || [],
-      playlist: databaseCharacter.playlist || [],
-      relations: databaseCharacter.relations || [],
+      return {
+        ...character,
+        posts: localCharacter?.posts || []
+      };
+    });
+  } else {
+    const databasePosts = postsResponse.data || [];
 
-      posts: localCharacter?.posts || [],
-      reposts: localCharacter?.reposts || []
-    };
-  });
+    characters = characters.map(character => {
+      const characterPosts = databasePosts
+        .filter(post => post.character_id === character.id)
+        .map(post => ({
+          id: post.id,
+          text: post.text || "",
+          image: post.image || "",
+          tags: post.tags || [],
+          music: post.music || null,
+          comments: post.comments || [],
+          date: formatDatabaseDate(post.published_at)
+        }));
+
+      return {
+        ...character,
+        posts: characterPosts
+      };
+    });
+  }
+
+  /*
+   * Новости
+   */
+
+  if (newsResponse.error) {
+    console.error(
+      "Ошибка загрузки новостей:",
+      newsResponse.error
+    );
+  } else if (newsResponse.data) {
+    news = newsResponse.data.map(item => ({
+      id: item.id,
+      title: item.title,
+      text: item.text || "",
+      image: item.image || "",
+      tags: item.tags || [],
+      date: formatDatabaseDate(item.published_at)
+    }));
+  }
 }
 
 function getCharacter(id) {
@@ -1035,7 +1146,7 @@ function openSitePlayerFromTrack(src, titleText) {
 }
 
 async function initializeSite() {
-  await loadCharactersFromSupabase();
+  await loadDataFromSupabase();
 
   if (document.getElementById("feed")) {
     renderSuggestions();
