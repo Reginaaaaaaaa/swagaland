@@ -387,6 +387,7 @@ renderProfilePosts(character);
 renderProfileRightbar(character);
 renderMiniCalendar(character);
 setupCustomPlayers();
+initProfileActions(character);
 }
 
 function renderProfileSidebar(character) {
