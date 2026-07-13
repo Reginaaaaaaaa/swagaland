@@ -1,68 +1,36 @@
 const loginForm = document.getElementById("loginForm");
-const registerForm = document.getElementById("registerForm");
+const loggedOutBlock = document.getElementById("loggedOutBlock");
+const loggedInBlock = document.getElementById("loggedInBlock");
+const ownedCharacter = document.getElementById("ownedCharacter");
+const logoutButton = document.getElementById("logoutButton");
+const authMessage = document.getElementById("authMessage");
 
-const showLoginButton = document.getElementById(
-  "showLoginButton"
-);
-
-const showRegisterButton = document.getElementById(
-  "showRegisterButton"
-);
-
-const loggedOutBlock = document.getElementById(
-  "loggedOutBlock"
-);
-
-const loggedInBlock = document.getElementById(
-  "loggedInBlock"
-);
-
-const currentUserEmail = document.getElementById(
-  "currentUserEmail"
-);
-
-const ownedCharacters = document.getElementById(
-  "ownedCharacters"
-);
-
-const logoutButton = document.getElementById(
-  "logoutButton"
-);
-
-const authMessage = document.getElementById(
-  "authMessage"
-);
+/*
+ * Служебный домен.
+ * Пользователь его не видит.
+ */
+const AUTH_EMAIL_DOMAIN = "characters.example";
 
 function showMessage(message, isError = false) {
   authMessage.textContent = message;
-
-  authMessage.classList.toggle(
-    "error",
-    isError
-  );
+  authMessage.classList.toggle("error", isError);
 }
 
-function showLoginForm() {
-  loginForm.classList.remove("hidden");
-  registerForm.classList.add("hidden");
+/*
+ * Превращаем логин Felix в служебный email:
+ * felix@characters.example
+ */
+function loginToEmail(login) {
+  const normalizedLogin = login
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_-]/g, "");
 
-  showLoginButton.classList.add("active");
-  showRegisterButton.classList.remove("active");
-
-  showMessage("");
+  return `${normalizedLogin}@${AUTH_EMAIL_DOMAIN}`;
 }
 
-function showRegisterForm() {
-  registerForm.classList.remove("hidden");
-  loginForm.classList.add("hidden");
-
-  showRegisterButton.classList.add("active");
-  showLoginButton.classList.remove("active");
-
-  showMessage("");
-}
-
-async function loadOwnedCharacters(userId) {
+async function loadOwnedCharacter(userId) {
   const { data, error } = await supabaseClient
     .from("character_owners")
     .select(`
@@ -73,53 +41,59 @@ async function loadOwnedCharacters(userId) {
         avatar
       )
     `)
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .limit(1)
+    .maybeSingle();
 
   if (error) {
-    console.error(
-      "Ошибка загрузки персонажей:",
-      error
-    );
+    console.error("Ошибка загрузки персонажа:", error);
 
-    ownedCharacters.innerHTML = `
-      <p>Не удалось загрузить персонажей.</p>
+    ownedCharacter.innerHTML = `
+      <p>Не удалось определить персонажа аккаунта.</p>
     `;
 
     return;
   }
 
-  if (!data || data.length === 0) {
-    ownedCharacters.innerHTML = `
+  if (!data || !data.characters) {
+    ownedCharacter.innerHTML = `
       <p>
-        К аккаунту пока не привязан ни один персонаж.
+        К этому аккаунту пока не привязан персонаж.
       </p>
     `;
 
     return;
   }
 
-  ownedCharacters.innerHTML = `
-    <h2>Мои персонажи</h2>
+  const character = data.characters;
 
-    ${data.map(item => {
-      const character = item.characters;
+  /*
+   * Запоминаем ID текущего персонажа.
+   * Позже он понадобится панели редактирования.
+   */
+  localStorage.setItem(
+    "currentCharacterId",
+    character.id
+  );
 
-      if (!character) return "";
+  ownedCharacter.innerHTML = `
+    <a
+      class="owned-character"
+      href="profile.html?id=${character.id}"
+    >
+      <img
+        src="${character.avatar}"
+        alt="${character.name}"
+      >
 
-      return `
-        <a
-          class="owned-character"
-          href="profile.html?id=${character.id}"
-        >
-          <img
-            src="${character.avatar}"
-            alt="${character.name}"
-          >
+      <span>${character.name}</span>
+    </a>
 
-          <span>${character.name}</span>
-        </a>
-      `;
-    }).join("")}
+    <p>
+      <a href="profile.html?id=${character.id}">
+        Перейти в профиль →
+      </a>
+    </p>
   `;
 }
 
@@ -130,8 +104,8 @@ async function updateAuthInterface(session) {
     loggedOutBlock.classList.remove("hidden");
     loggedInBlock.classList.add("hidden");
 
-    currentUserEmail.textContent = "";
-    ownedCharacters.innerHTML = "";
+    ownedCharacter.innerHTML = "";
+    localStorage.removeItem("currentCharacterId");
 
     return;
   }
@@ -139,128 +113,68 @@ async function updateAuthInterface(session) {
   loggedOutBlock.classList.add("hidden");
   loggedInBlock.classList.remove("hidden");
 
-  currentUserEmail.textContent = user.email || "";
-
-  await loadOwnedCharacters(user.id);
+  await loadOwnedCharacter(user.id);
 }
 
-showLoginButton.addEventListener(
-  "click",
-  showLoginForm
-);
+loginForm.addEventListener("submit", async event => {
+  event.preventDefault();
 
-showRegisterButton.addEventListener(
-  "click",
-  showRegisterForm
-);
+  const login = document
+    .getElementById("loginName")
+    .value
+    .trim();
 
-registerForm.addEventListener(
-  "submit",
-  async event => {
-    event.preventDefault();
+  const password = document
+    .getElementById("loginPassword")
+    .value;
 
-    const displayName = document
-      .getElementById("registerName")
-      .value
-      .trim();
-
-    const email = document
-      .getElementById("registerEmail")
-      .value
-      .trim();
-
-    const password = document
-      .getElementById("registerPassword")
-      .value;
-
-    showMessage("Создаём аккаунт...");
-
-    const { data, error } =
-      await supabaseClient.auth.signUp({
-        email,
-        password,
-
-        options: {
-          data: {
-            display_name: displayName
-          }
-        }
-      });
-
-    if (error) {
-      showMessage(error.message, true);
-      return;
-    }
-
-    registerForm.reset();
-
-    if (data.session) {
-      showMessage("Аккаунт создан.");
-      await updateAuthInterface(data.session);
-    } else {
-      showMessage(
-        "Аккаунт создан. Проверь почту и подтверди регистрацию."
-      );
-    }
+  if (!login || !password) {
+    showMessage("Введи логин и пароль.", true);
+    return;
   }
-);
 
-loginForm.addEventListener(
-  "submit",
-  async event => {
-    event.preventDefault();
+  const email = loginToEmail(login);
 
-    const email = document
-      .getElementById("loginEmail")
-      .value
-      .trim();
+  showMessage("Входим...");
 
-    const password = document
-      .getElementById("loginPassword")
-      .value;
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
 
-    showMessage("Входим...");
+  if (error) {
+    console.error(error);
 
-    const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
+    showMessage(
+      "Неверный логин или пароль.",
+      true
+    );
 
-    if (error) {
-      showMessage(
-        "Не удалось войти. Проверь почту и пароль.",
-        true
-      );
-
-      console.error(error);
-      return;
-    }
-
-    loginForm.reset();
-
-    showMessage("Вход выполнен.");
-
-    await updateAuthInterface(data.session);
+    return;
   }
-);
 
-logoutButton.addEventListener(
-  "click",
-  async () => {
-    const { error } =
-      await supabaseClient.auth.signOut();
+  loginForm.reset();
 
-    if (error) {
-      showMessage(error.message, true);
-      return;
-    }
+  showMessage("Вход выполнен.");
 
-    showMessage("Ты вышла из аккаунта.");
+  await updateAuthInterface(data.session);
+});
 
-    await updateAuthInterface(null);
+logoutButton.addEventListener("click", async () => {
+  const { error } =
+    await supabaseClient.auth.signOut();
+
+  if (error) {
+    console.error(error);
+    showMessage("Не удалось выйти из аккаунта.", true);
+    return;
   }
-);
+
+  showMessage("Ты вышел из аккаунта.");
+
+  await updateAuthInterface(null);
+});
 
 async function initializeAuthPage() {
   const {
