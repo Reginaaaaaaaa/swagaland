@@ -5,10 +5,6 @@ const ownedCharacter = document.getElementById("ownedCharacter");
 const logoutButton = document.getElementById("logoutButton");
 const authMessage = document.getElementById("authMessage");
 
-/*
- * Служебный домен.
- * Пользователь его не видит.
- */
 const AUTH_EMAIL_DOMAIN = "characters.example";
 
 function showMessage(message, isError = false) {
@@ -16,10 +12,6 @@ function showMessage(message, isError = false) {
   authMessage.classList.toggle("error", isError);
 }
 
-/*
- * Превращаем логин Felix в служебный email:
- * felix@characters.example
- */
 function loginToEmail(login) {
   const normalizedLogin = login
     .trim()
@@ -67,10 +59,6 @@ async function loadOwnedCharacter(userId) {
 
   const character = data.characters;
 
-  /*
-   * Запоминаем ID текущего персонажа.
-   * Позже он понадобится панели редактирования.
-   */
   localStorage.setItem(
     "currentCharacterId",
     character.id
