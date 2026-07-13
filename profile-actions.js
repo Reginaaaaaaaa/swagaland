@@ -303,14 +303,6 @@ function createPostModal(character) {
           placeholder="music/Toxic.mp3"
         >
 
-        <label for="newPostDate">Дата публикации</label>
-
-        <input
-          id="newPostDate"
-          type="date"
-          required
-        >
-
         <div
           id="createPostMessage"
           class="form-message"
@@ -376,9 +368,9 @@ async function publishNewPost(event, character) {
     .value
     .trim();
 
-  const publishedAt = document
-    .getElementById("newPostDate")
-    .value;
+  const today = new Date();
+
+  const publishedAt = today.toISOString().slice(0, 10);
 
   if (!text) {
     message.textContent = "Напиши текст записи.";
