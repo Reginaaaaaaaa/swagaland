@@ -8,7 +8,6 @@
   >
 
   <title>Вход в блог</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -21,47 +20,32 @@
 </header>
 
 <div class="auth-page">
-
   <section class="auth-card">
-    <h1>Вход в блог</h1>
+    <h1>Вход в аккаунт персонажа</h1>
 
     <div id="loggedOutBlock">
-
-      <div class="auth-tabs">
-        <button
-          id="showLoginButton"
-          class="auth-tab active"
-          type="button"
-        >
-          Вход
-        </button>
-
-        <button
-          id="showRegisterButton"
-          class="auth-tab"
-          type="button"
-        >
-          Регистрация
-        </button>
-      </div>
-
       <form id="loginForm" class="auth-form">
-        <label for="loginEmail">Почта</label>
+
+        <label for="loginName">
+          Логин
+        </label>
 
         <input
-          id="loginEmail"
-          type="email"
-          autocomplete="email"
+          id="loginName"
+          type="text"
+          autocomplete="username"
+          placeholder="Например: Felix"
           required
         >
 
-        <label for="loginPassword">Пароль</label>
+        <label for="loginPassword">
+          Пароль
+        </label>
 
         <input
           id="loginPassword"
           type="password"
           autocomplete="current-password"
-          minlength="6"
           required
         >
 
@@ -69,48 +53,12 @@
           Войти
         </button>
       </form>
-
-      <form id="registerForm" class="auth-form hidden">
-        <label for="registerName">Имя</label>
-
-        <input
-          id="registerName"
-          type="text"
-          autocomplete="nickname"
-          required
-        >
-
-        <label for="registerEmail">Почта</label>
-
-        <input
-          id="registerEmail"
-          type="email"
-          autocomplete="email"
-          required
-        >
-
-        <label for="registerPassword">Пароль</label>
-
-        <input
-          id="registerPassword"
-          type="password"
-          autocomplete="new-password"
-          minlength="6"
-          required
-        >
-
-        <button type="submit">
-          Зарегистрироваться
-        </button>
-      </form>
     </div>
 
     <div id="loggedInBlock" class="hidden">
-      <p>Ты вошла как:</p>
+      <p>Выполнен вход в аккаунт:</p>
 
-      <strong id="currentUserEmail"></strong>
-
-      <div id="ownedCharacters" class="owned-characters"></div>
+      <div id="ownedCharacter"></div>
 
       <button id="logoutButton" type="button">
         Выйти
@@ -123,7 +71,6 @@
       aria-live="polite"
     ></div>
   </section>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
