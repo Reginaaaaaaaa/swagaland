@@ -1,7 +1,7 @@
 const loginForm = document.getElementById("loginForm");
 const loggedOutBlock = document.getElementById("loggedOutBlock");
 const loggedInBlock = document.getElementById("loggedInBlock");
-const ownedCharacter = document.getElementById("ownedCharacter");
+const ownedCharacters = document.getElementById("ownedCharacters");
 const logoutButton = document.getElementById("logoutButton");
 const authMessage = document.getElementById("authMessage");
 
@@ -22,7 +22,20 @@ function loginToEmail(login) {
   return `${normalizedLogin}@${AUTH_EMAIL_DOMAIN}`;
 }
 
-async function loadOwnedCharacter(userId) {
+function setActiveCharacter(characterId) {
+  localStorage.setItem("currentCharacterId", characterId);
+
+  document
+    .querySelectorAll(".owned-character")
+    .forEach(card => {
+      card.classList.toggle(
+        "active",
+        card.dataset.characterId === characterId
+      );
+    });
+}
+
+async function loadOwnedCharacters(userId) {
   const { data, error } = await supabaseClient
     .from("character_owners")
     .select(`
@@ -30,59 +43,139 @@ async function loadOwnedCharacter(userId) {
       characters (
         id,
         name,
-        avatar
+        avatar,
+        status
       )
     `)
-    .eq("user_id", userId)
-    .limit(1)
-    .maybeSingle();
+    .eq("user_id", userId);
 
   if (error) {
-    console.error("Ошибка загрузки персонажа:", error);
+    console.error("Ошибка загрузки персонажей:", error);
 
-    ownedCharacter.innerHTML = `
-      <p>Не удалось определить персонажа аккаунта.</p>
+    ownedCharacters.innerHTML = `
+      <p>Не удалось загрузить персонажей аккаунта.</p>
     `;
 
     return;
   }
 
-  if (!data || !data.characters) {
-    ownedCharacter.innerHTML = `
-      <p>
-        К этому аккаунту пока не привязан персонаж.
-      </p>
+  const validItems = (data || []).filter(
+    item => item.characters
+  );
+
+  if (validItems.length === 0) {
+    ownedCharacters.innerHTML = `
+      <p>К этому аккаунту пока не привязан персонаж.</p>
     `;
 
+    localStorage.removeItem("currentCharacterId");
     return;
   }
 
-  const character = data.characters;
+  const savedCharacterId =
+    localStorage.getItem("currentCharacterId");
+
+  const savedCharacterExists = validItems.some(
+    item => item.characters.id === savedCharacterId
+  );
+
+  const activeCharacterId = savedCharacterExists
+    ? savedCharacterId
+    : validItems[0].characters.id;
 
   localStorage.setItem(
     "currentCharacterId",
-    character.id
+    activeCharacterId
   );
 
-  ownedCharacter.innerHTML = `
-    <a
-      class="owned-character"
-      href="profile.html?id=${character.id}"
-    >
-      <img
-        src="${character.avatar}"
-        alt="${character.name}"
-      >
+  ownedCharacters.innerHTML = `
+    <h2>Мои персонажи</h2>
 
-      <span>${character.name}</span>
-    </a>
-
-    <p>
-      <a href="profile.html?id=${character.id}">
-        Перейти в профиль →
-      </a>
+    <p class="character-switcher-description">
+      Выбери персонажа, под которым хочешь продолжить.
     </p>
+
+    <div class="owned-characters-list">
+      ${validItems.map(item => {
+        const character = item.characters;
+        const isActive =
+          character.id === activeCharacterId;
+
+        return `
+          <button
+            class="owned-character ${isActive ? "active" : ""}"
+            type="button"
+            data-character-id="${character.id}"
+          >
+            <img
+              src="${character.avatar}"
+              alt="${character.name}"
+            >
+
+            <span class="owned-character-info">
+              <strong>${character.name}</strong>
+
+              ${
+                character.status
+                  ? `<small>${character.status}</small>`
+                  : ""
+              }
+            </span>
+
+            <span class="owned-character-check">
+              ${isActive ? "✓" : ""}
+            </span>
+          </button>
+        `;
+      }).join("")}
+    </div>
+
+    <a
+      id="openActiveCharacter"
+      class="open-active-character"
+      href="profile.html?id=${activeCharacterId}"
+    >
+      Перейти в профиль выбранного персонажа →
+    </a>
   `;
+
+  document
+    .querySelectorAll(".owned-character")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        const characterId =
+          button.dataset.characterId;
+
+        setActiveCharacter(characterId);
+
+        const openProfileLink =
+          document.getElementById(
+            "openActiveCharacter"
+          );
+
+        if (openProfileLink) {
+          openProfileLink.href =
+            `profile.html?id=${characterId}`;
+        }
+
+        document
+          .querySelectorAll(
+            ".owned-character-check"
+          )
+          .forEach(check => {
+            check.textContent = "";
+          });
+
+        const currentCheck =
+          button.querySelector(
+            ".owned-character-check"
+          );
+
+        if (currentCheck) {
+          currentCheck.textContent = "✓";
+        }
+      });
+    });
 }
 
 async function updateAuthInterface(session) {
@@ -92,7 +185,7 @@ async function updateAuthInterface(session) {
     loggedOutBlock.classList.remove("hidden");
     loggedInBlock.classList.add("hidden");
 
-    ownedCharacter.innerHTML = "";
+    ownedCharacters.innerHTML = "";
     localStorage.removeItem("currentCharacterId");
 
     return;
@@ -101,74 +194,92 @@ async function updateAuthInterface(session) {
   loggedOutBlock.classList.add("hidden");
   loggedInBlock.classList.remove("hidden");
 
-  await loadOwnedCharacter(user.id);
+  await loadOwnedCharacters(user.id);
 }
 
-loginForm.addEventListener("submit", async event => {
-  event.preventDefault();
+loginForm.addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
 
-  const login = document
-    .getElementById("loginName")
-    .value
-    .trim();
+    const login = document
+      .getElementById("loginName")
+      .value
+      .trim();
 
-  const password = document
-    .getElementById("loginPassword")
-    .value;
+    const password = document
+      .getElementById("loginPassword")
+      .value;
 
-  if (!login || !password) {
-    showMessage("Введи логин и пароль.", true);
-    return;
-  }
+    if (!login || !password) {
+      showMessage(
+        "Введи логин и пароль.",
+        true
+      );
 
-  const email = loginToEmail(login);
+      return;
+    }
 
-  showMessage("Входим...");
+    const email = loginToEmail(login);
 
-  const { data, error } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
+    showMessage("Входим...");
 
-  if (error) {
-    console.error(error);
+    const { data, error } =
+      await supabaseClient.auth
+        .signInWithPassword({
+          email,
+          password
+        });
 
-    showMessage(
-      "Неверный логин или пароль.",
-      true
+    if (error) {
+      console.error(error);
+
+      showMessage(
+        "Неверный логин или пароль.",
+        true
+      );
+
+      return;
+    }
+
+    loginForm.reset();
+    showMessage("Вход выполнен.");
+
+    await updateAuthInterface(
+      data.session
     );
-
-    return;
   }
+);
 
-  loginForm.reset();
+logoutButton.addEventListener(
+  "click",
+  async () => {
+    const { error } =
+      await supabaseClient.auth.signOut();
 
-  showMessage("Вход выполнен.");
+    if (error) {
+      console.error(error);
 
-  await updateAuthInterface(data.session);
-});
+      showMessage(
+        "Не удалось выйти из аккаунта.",
+        true
+      );
 
-logoutButton.addEventListener("click", async () => {
-  const { error } =
-    await supabaseClient.auth.signOut();
+      return;
+    }
 
-  if (error) {
-    console.error(error);
-    showMessage("Не удалось выйти из аккаунта.", true);
-    return;
+    showMessage("Ты вышел из аккаунта.");
+
+    await updateAuthInterface(null);
   }
-
-  showMessage("Ты вышел из аккаунта.");
-
-  await updateAuthInterface(null);
-});
+);
 
 async function initializeAuthPage() {
   const {
     data: { session },
     error
-  } = await supabaseClient.auth.getSession();
+  } = await supabaseClient.auth
+    .getSession();
 
   if (error) {
     console.error(error);
