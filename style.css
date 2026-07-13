@@ -1307,3 +1307,77 @@ body.modal-open {
 .hidden {
   display: none !important;
 }
+
+.post-image-dropzone {
+  box-sizing: border-box;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px dashed #b8c9df;
+  background: #f7f9fc;
+  padding: 18px;
+
+  color: #5c6f88;
+  text-align: center;
+  cursor: pointer;
+}
+
+.post-image-dropzone:hover,
+.post-image-dropzone.dragover {
+  border-color: #5d82b7;
+  background: #edf3fa;
+}
+
+.post-image-dropzone.has-image {
+  min-height: auto;
+  padding: 9px;
+}
+
+.post-image-input {
+  display: none;
+}
+
+.post-image-placeholder {
+  display: grid;
+  gap: 5px;
+}
+
+.post-image-placeholder strong {
+  color: #234f86;
+  font-size: 14px;
+}
+
+.post-image-placeholder span {
+  font-size: 12px;
+}
+
+.post-image-preview {
+  margin-top: 8px;
+  border: 1px solid #c9d8ec;
+  background: #f4f7fb;
+  padding: 8px;
+}
+
+.post-image-preview img {
+  display: block;
+  max-width: 100%;
+  max-height: 380px;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.remove-post-image {
+  display: block;
+  margin: 8px auto 0;
+  border: 1px solid #b8c9df;
+  background: white;
+  color: #7c3d3d;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.remove-post-image:hover {
+  background: #fff1f1;
+}
