@@ -1027,3 +1027,89 @@ body.player-open {
 .hidden {
   display: none !important;
 }
+
+.character-switcher-description {
+  color: #6b7f99;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.owned-characters-list {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.owned-character {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 52px 1fr 24px;
+  gap: 10px;
+  align-items: center;
+
+  border: 1px solid #c9d8ec;
+  background: #f4f7fb;
+  padding: 8px;
+
+  color: #234f86;
+  text-align: left;
+  cursor: pointer;
+}
+
+.owned-character:hover {
+  background: #eaf1fa;
+}
+
+.owned-character.active {
+  border-color: #5d82b7;
+  background: #e1ebf8;
+}
+
+.owned-character img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border: 1px solid #b8c9df;
+  background: white;
+}
+
+.owned-character-info {
+  min-width: 0;
+}
+
+.owned-character-info strong {
+  display: block;
+  font-size: 14px;
+}
+
+.owned-character-info small {
+  display: block;
+  margin-top: 4px;
+  color: #6b7f99;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.owned-character-check {
+  color: #2f5f9f;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.open-active-character {
+  display: block;
+  margin-top: 12px;
+  padding: 9px;
+  border: 1px solid #244c80;
+  background: #2f5f9f;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+}
+
+.open-active-character:hover {
+  background: #244c80;
+}
