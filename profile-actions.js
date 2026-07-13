@@ -303,6 +303,37 @@ function createPostModal(character) {
           placeholder="music/Toxic.mp3"
         >
 
+        <label>Дата публикации</label>
+
+<div class="post-date-row">
+
+  <select id="newPostDay">
+    ${Array.from({ length: 31 }, (_, i) => `
+      <option value="${i + 1}">
+        ${i + 1}
+      </option>
+    `).join("")}
+  </select>
+
+  <select id="newPostMonth">
+
+    <option value="1">января</option>
+    <option value="2">февраля</option>
+    <option value="3">марта</option>
+    <option value="4">апреля</option>
+    <option value="5">мая</option>
+    <option value="6">июня</option>
+    <option value="7">июля</option>
+    <option value="8">августа</option>
+    <option value="9">сентября</option>
+    <option value="10">октября</option>
+    <option value="11">ноября</option>
+    <option value="12">декабря</option>
+
+  </select>
+
+</div>
+
         <div
           id="createPostMessage"
           class="form-message"
@@ -316,6 +347,14 @@ function createPostModal(character) {
   `;
 
   document.body.appendChild(modal);
+
+  const now = new Date();
+
+document.getElementById("newPostDay").value =
+    now.getDate();
+
+document.getElementById("newPostMonth").value =
+    now.getMonth() + 1;
 
   const dateInput = document.getElementById("newPostDate");
 
@@ -368,9 +407,17 @@ async function publishNewPost(event, character) {
     .value
     .trim();
 
-  const today = new Date();
+ const day =
+    document.getElementById("newPostDay").value;
 
-  const publishedAt = today.toISOString().slice(0, 10);
+const month =
+    document.getElementById("newPostMonth").value;
+
+const year =
+    new Date().getFullYear();
+
+const publishedAt =
+    `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
   if (!text) {
     message.textContent = "Напиши текст записи.";
