@@ -1,3 +1,16 @@
+const MAX_ORIGINAL_IMAGE_SIZE = 10 * 1024 * 1024;
+const MAX_UPLOAD_IMAGE_SIZE = 5 * 1024 * 1024;
+const MAX_IMAGE_DIMENSION = 1600;
+
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+];
+
+let selectedPostImageFile = null;
+let selectedPostImagePreviewUrl = null;
+
 async function userOwnsCharacter(characterId) {
   const {
     data: { session },
@@ -263,15 +276,49 @@ function createPostModal(character) {
           required
         ></textarea>
 
-        <label for="newPostImage">
-          Путь к изображению
-        </label>
+        <label>Фотография</label>
 
-        <input
-          id="newPostImage"
-          type="text"
-          placeholder="images/posts/photo.jpg"
-        >
+<div
+  id="postImageDropzone"
+  class="post-image-dropzone"
+  tabindex="0"
+>
+  <input
+    id="newPostImage"
+    class="post-image-input"
+    type="file"
+    accept="image/jpeg,image/png,image/webp"
+  >
+
+  <div class="post-image-placeholder">
+    <strong>Перетащи фотографию сюда</strong>
+    <span>или нажми, чтобы выбрать файл</span>
+  </div>
+</div>
+
+<div
+  id="postImagePreview"
+  class="post-image-preview hidden"
+>
+  <img
+    id="postImagePreviewPicture"
+    src=""
+    alt="Предпросмотр фотографии"
+  >
+
+  <button
+    id="removePostImage"
+    class="remove-post-image"
+    type="button"
+  >
+    × Удалить фотографию
+  </button>
+</div>
+
+<div
+  id="postImageMessage"
+  class="form-message"
+></div>
 
         <label for="newPostTags">
           Теги через запятую
@@ -348,6 +395,11 @@ function createPostModal(character) {
 
   document.body.appendChild(modal);
 
+  selectedPostImageFile = null;
+clearPostImagePreview();
+
+setupPostImagePicker();
+
   const now = new Date();
 
 document.getElementById("newPostDay").value =
@@ -373,6 +425,471 @@ document.getElementById("newPostMonth").value =
     });
 }
 
+function setupPostImagePicker() {
+  const dropzone = document.getElementById(
+    "postImageDropzone"
+  );
+
+  const input = document.getElementById(
+    "newPostImage"
+  );
+
+  const removeButton = document.getElementById(
+    "removePostImage"
+  );
+
+  if (!dropzone || !input || !removeButton) return;
+
+  dropzone.addEventListener("click", () => {
+    input.click();
+  });
+
+  dropzone.addEventListener("keydown", event => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      input.click();
+    }
+  });
+
+  input.addEventListener("click", event => {
+    event.stopPropagation();
+  });
+
+  input.addEventListener("change", async () => {
+    const file = input.files?.[0];
+
+    if (!file) return;
+
+    await handleSelectedPostImage(file);
+  });
+
+  dropzone.addEventListener("dragover", event => {
+    event.preventDefault();
+    dropzone.classList.add("dragover");
+  });
+
+  dropzone.addEventListener("dragleave", () => {
+    dropzone.classList.remove("dragover");
+  });
+
+  dropzone.addEventListener("drop", async event => {
+    event.preventDefault();
+    dropzone.classList.remove("dragover");
+
+    const file = event.dataTransfer.files?.[0];
+
+    if (!file) return;
+
+    await handleSelectedPostImage(file);
+  });
+
+  removeButton.addEventListener("click", () => {
+    clearPostImageSelection();
+  });
+}
+
+async function handleSelectedPostImage(file) {
+  const message = document.getElementById(
+    "postImageMessage"
+  );
+
+  if (message) {
+    message.textContent = "";
+    message.classList.remove("error");
+  }
+
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    showPostImageError(
+      "Можно загружать только JPG, PNG или WEBP."
+    );
+
+    clearPostImageSelection();
+    return;
+  }
+
+  if (file.size > MAX_ORIGINAL_IMAGE_SIZE) {
+    showPostImageError(
+      "Фотография должна занимать не более 10 МБ."
+    );
+
+    clearPostImageSelection();
+    return;
+  }
+
+  try {
+    selectedPostImageFile =
+      await preparePostImage(file);
+
+    if (
+      selectedPostImageFile.size >
+      MAX_UPLOAD_IMAGE_SIZE
+    ) {
+      throw new Error("IMAGE_TOO_LARGE");
+    }
+
+    showPostImagePreview(selectedPostImageFile);
+  } catch (error) {
+    console.error(
+      "Ошибка обработки фотографии:",
+      error
+    );
+
+    showPostImageError(
+      "Не удалось подготовить фотографию. Выбери другое изображение."
+    );
+
+    clearPostImageSelection(false);
+  }
+}
+
+function showPostImageError(text) {
+  const message = document.getElementById(
+    "postImageMessage"
+  );
+
+  if (!message) return;
+
+  message.textContent = text;
+  message.classList.add("error");
+}
+
+function showPostImagePreview(file) {
+  const preview = document.getElementById(
+    "postImagePreview"
+  );
+
+  const picture = document.getElementById(
+    "postImagePreviewPicture"
+  );
+
+  const dropzone = document.getElementById(
+    "postImageDropzone"
+  );
+
+  if (!preview || !picture) return;
+
+  clearPostImagePreview();
+
+  selectedPostImagePreviewUrl =
+    URL.createObjectURL(file);
+
+  picture.src = selectedPostImagePreviewUrl;
+
+  preview.classList.remove("hidden");
+
+  if (dropzone) {
+    dropzone.classList.add("has-image");
+  }
+}
+
+function clearPostImagePreview() {
+  if (selectedPostImagePreviewUrl) {
+    URL.revokeObjectURL(
+      selectedPostImagePreviewUrl
+    );
+
+    selectedPostImagePreviewUrl = null;
+  }
+
+  const preview = document.getElementById(
+    "postImagePreview"
+  );
+
+  const picture = document.getElementById(
+    "postImagePreviewPicture"
+  );
+
+  if (preview) {
+    preview.classList.add("hidden");
+  }
+
+  if (picture) {
+    picture.src = "";
+  }
+}
+
+function clearPostImageSelection(
+  clearMessage = true
+) {
+  selectedPostImageFile = null;
+
+  clearPostImagePreview();
+
+  const input = document.getElementById(
+    "newPostImage"
+  );
+
+  const dropzone = document.getElementById(
+    "postImageDropzone"
+  );
+
+  const message = document.getElementById(
+    "postImageMessage"
+  );
+
+  if (input) {
+    input.value = "";
+  }
+
+  if (dropzone) {
+    dropzone.classList.remove("has-image");
+  }
+
+  if (message && clearMessage) {
+    message.textContent = "";
+    message.classList.remove("error");
+  }
+}
+
+async function preparePostImage(file) {
+  const image = await loadImageFile(file);
+
+  const width = image.naturalWidth;
+  const height = image.naturalHeight;
+
+  const largestSide = Math.max(width, height);
+
+  if (
+    largestSide <= MAX_IMAGE_DIMENSION &&
+    file.size <= MAX_UPLOAD_IMAGE_SIZE
+  ) {
+    return file;
+  }
+
+  let maxDimension = MAX_IMAGE_DIMENSION;
+
+  const qualitySteps = [
+    0.9,
+    0.87,
+    0.84
+  ];
+
+  for (const quality of qualitySteps) {
+    const optimizedFile =
+      await resizeImageToWebp(
+        image,
+        file.name,
+        maxDimension,
+        quality
+      );
+
+    if (
+      optimizedFile.size <=
+      MAX_UPLOAD_IMAGE_SIZE
+    ) {
+      return optimizedFile;
+    }
+  }
+
+  maxDimension = 1400;
+
+  const smallerFile =
+    await resizeImageToWebp(
+      image,
+      file.name,
+      maxDimension,
+      0.84
+    );
+
+  if (
+    smallerFile.size <=
+    MAX_UPLOAD_IMAGE_SIZE
+  ) {
+    return smallerFile;
+  }
+
+  throw new Error("IMAGE_TOO_LARGE");
+}
+
+function loadImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const url = URL.createObjectURL(file);
+
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(image);
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(
+        new Error("Не удалось открыть изображение")
+      );
+    };
+
+    image.src = url;
+  });
+}
+
+function resizeImageToWebp(
+  image,
+  originalName,
+  maxDimension,
+  quality
+) {
+  return new Promise((resolve, reject) => {
+    const originalWidth = image.naturalWidth;
+    const originalHeight = image.naturalHeight;
+
+    const scale = Math.min(
+      1,
+      maxDimension /
+        Math.max(
+          originalWidth,
+          originalHeight
+        )
+    );
+
+    const width = Math.round(
+      originalWidth * scale
+    );
+
+    const height = Math.round(
+      originalHeight * scale
+    );
+
+    const canvas = document.createElement(
+      "canvas"
+    );
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      reject(
+        new Error("Не удалось создать изображение")
+      );
+
+      return;
+    }
+
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+
+    context.drawImage(
+      image,
+      0,
+      0,
+      width,
+      height
+    );
+
+    canvas.toBlob(
+      blob => {
+        if (!blob) {
+          reject(
+            new Error(
+              "Не удалось обработать изображение"
+            )
+          );
+
+          return;
+        }
+
+        const baseName =
+          originalName
+            .replace(/\.[^.]+$/, "")
+            .replace(/[^a-zA-Z0-9_-]/g, "_")
+            .slice(0, 60) || "photo";
+
+        const optimizedFile = new File(
+          [blob],
+          `${baseName}.webp`,
+          {
+            type: "image/webp",
+            lastModified: Date.now()
+          }
+        );
+
+        resolve(optimizedFile);
+      },
+      "image/webp",
+      quality
+    );
+  });
+}
+
+async function uploadPostImage(
+  file,
+  characterId
+) {
+  const extension =
+    file.type === "image/png"
+      ? "png"
+      : file.type === "image/jpeg"
+        ? "jpg"
+        : "webp";
+
+  const fileId =
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `${Date.now()}_${Math.random()
+          .toString(36)
+          .slice(2, 8)}`;
+
+  const filePath =
+    `${characterId}/${fileId}.${extension}`;
+
+  const { error: uploadError } =
+    await supabaseClient.storage
+      .from("post-images")
+      .upload(
+        filePath,
+        file,
+        {
+          cacheControl: "3600",
+          contentType: file.type,
+          upsert: false
+        }
+      );
+
+  if (uploadError) {
+    throw uploadError;
+  }
+
+  const { data } =
+    supabaseClient.storage
+      .from("post-images")
+      .getPublicUrl(filePath);
+
+  if (!data?.publicUrl) {
+    await deleteUploadedPostImage(
+      filePath
+    );
+
+    throw new Error(
+      "Не удалось получить ссылку на файл"
+    );
+  }
+
+  return {
+    publicUrl: data.publicUrl,
+    path: filePath
+  };
+}
+
+async function deleteUploadedPostImage(
+  filePath
+) {
+  if (!filePath) return;
+
+  const { error } =
+    await supabaseClient.storage
+      .from("post-images")
+      .remove([filePath]);
+
+  if (error) {
+    console.error(
+      "Не удалось удалить файл:",
+      error
+    );
+  }
+}
+
 async function publishNewPost(event, character) {
   event.preventDefault();
 
@@ -382,11 +899,6 @@ async function publishNewPost(event, character) {
 
   const text = document
     .getElementById("newPostText")
-    .value
-    .trim();
-
-  const image = document
-    .getElementById("newPostImage")
     .value
     .trim();
 
@@ -436,7 +948,17 @@ const publishedAt =
   const postId = createPostId(character.id);
 
   message.classList.remove("error");
-  message.textContent = "Публикуем...";
+message.textContent = "Публикуем...";
+
+let uploadedImage = null;
+
+try {
+  if (selectedPostImageFile) {
+    uploadedImage = await uploadPostImage(
+      selectedPostImageFile,
+      character.id
+    );
+  }
 
   const { error } = await supabaseClient
     .from("posts")
@@ -444,12 +966,44 @@ const publishedAt =
       id: postId,
       character_id: character.id,
       text,
-      image: image || null,
+      image:
+        uploadedImage?.publicUrl || null,
       tags,
       music,
       comments: [],
       published_at: publishedAt
     });
+
+  if (error) {
+    throw error;
+  }
+
+  message.classList.remove("error");
+  message.textContent =
+    "Запись опубликована.";
+
+  selectedPostImageFile = null;
+  clearPostImagePreview();
+
+  window.setTimeout(() => {
+    window.location.reload();
+  }, 500);
+} catch (error) {
+  console.error(
+    "Ошибка публикации:",
+    error
+  );
+  if (uploadedImage?.path) {
+    await deleteUploadedPostImage(
+      uploadedImage.path
+    );
+  }
+
+  message.textContent =
+    "Не удалось опубликовать запись.";
+
+  message.classList.add("error");
+}
 
   if (error) {
     console.error("Ошибка публикации:", error);
