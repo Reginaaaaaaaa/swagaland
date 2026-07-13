@@ -1113,3 +1113,83 @@ body.player-open {
 .open-active-character:hover {
   background: #244c80;
 }
+
+.header-character-switcher {
+  display: none;
+  margin-left: auto;
+}
+
+.header-character-switcher.visible {
+  display: block;
+}
+
+.header-character-control {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  padding: 4px 6px;
+}
+
+.header-character-avatar {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  background: white;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+.header-character-select {
+  max-width: 180px;
+  min-width: 130px;
+  border: none;
+  background: transparent;
+  color: white;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+.header-character-select option {
+  background: white;
+  color: #234f86;
+}
+
+.header-no-character {
+  color: #dce8ff;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.header-no-character:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.auth-link {
+  margin-left: 8px;
+}
+
+@media (max-width: 800px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .header-character-switcher {
+    order: 10;
+    width: 100%;
+    margin: 6px 0 0;
+  }
+
+  .header-character-control {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .header-character-select {
+    flex: 1;
+    max-width: none;
+  }
+}
