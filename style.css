@@ -1193,3 +1193,117 @@ body.player-open {
     max-width: none;
   }
 }
+
+.profile-owner-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 4px;
+}
+
+.profile-owner-controls button {
+  padding: 7px 11px;
+  border: 1px solid #244c80;
+  background: #2f5f9f;
+  color: white;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.profile-owner-controls button:hover {
+  background: #244c80;
+}
+
+.edit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(18, 32, 50, 0.72);
+}
+
+.edit-modal-window {
+  position: relative;
+  box-sizing: border-box;
+  width: min(560px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid #8ba4c6;
+  background: white;
+  padding: 18px;
+}
+
+.edit-modal-window h2 {
+  margin: 0 35px 16px 0;
+  color: #234f86;
+}
+
+.edit-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  color: #5c6f88;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.edit-form {
+  display: grid;
+  gap: 8px;
+}
+
+.edit-form label {
+  margin-top: 5px;
+  color: #5c6f88;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.edit-form input,
+.edit-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #b8c9df;
+  background: #fff;
+  padding: 9px;
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+.edit-form textarea {
+  min-height: 95px;
+  resize: vertical;
+}
+
+.edit-form button[type="submit"] {
+  margin-top: 8px;
+  padding: 9px 14px;
+  border: 1px solid #244c80;
+  background: #2f5f9f;
+  color: white;
+  cursor: pointer;
+}
+
+.form-message {
+  min-height: 16px;
+  color: #2f5f9f;
+  font-size: 12px;
+}
+
+.form-message.error {
+  color: #a43d3d;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
